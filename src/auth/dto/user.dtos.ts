@@ -12,7 +12,7 @@ export class RegisterCredentials {
   password!: string;
   @IsString()
   @MinLength(6)
-  @MaxLength(10)
+  @MaxLength(100)
   confirmPassword!: string;
 }
 
@@ -21,6 +21,6 @@ export class LoginCredentials {
   email!: string;
   @IsString()
   @MinLength(6)
-  @MaxLength(10)
+  @MaxLength(100)
   password!: string;
 }

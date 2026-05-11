@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { RegisterCredentials } from './dto/user.dtos';
 
-const conta: RegisterCredentials[] = [];
+const conta: Array<{ email: string; username: string; password: string }> = [];
 
 @Injectable()
 export class AuthService {
@@ -17,11 +17,10 @@ export class AuthService {
       throw new Error('User with this email already exists');
     }
 
-    const newUser: RegisterCredentials = {
+    const newUser = {
       email,
       username,
       password,
-      confirmPassword,
     };
 
     conta.push(newUser);
