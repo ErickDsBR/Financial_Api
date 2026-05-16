@@ -1,30 +1,40 @@
 import { Injectable } from '@nestjs/common';
 import { RegisterCredentials } from './dto/user.dtos';
-
-const conta: Array<{ email: string; username: string; password: string }> = [];
+import { User } from './Entities/user_entities';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class AuthService {
-  register(credentials: RegisterCredentials) {
-    const { email, username, password, confirmPassword } = credentials;
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {} //! inject repository into the service
+
+  async register(credentials: RegisterCredentials) {
+    const { email, name, password, confirmPassword } = credentials;
 
     if (password !== confirmPassword) {
       throw new Error('Password and confirm password do not match');
     }
 
-    const userExists = conta.find((user) => user.email === email);
+    const userExists = await this.userRepository.findOne({ where: { email } });
     if (userExists) {
       throw new Error('User with this email already exists');
     }
 
     const newUser = {
       email,
-      username,
+      name,
       password,
     };
 
-    conta.push(newUser);
-    console.log('Registered users:', conta);
-    return { message: 'User registered successfully' };
+    this.userRepository.create(newUser);
+    await this.userRepository.save(newUser);
+
+    return {
+      message: 'User registered successfully',
+      user: { email, name },
+    };
   }
 }
