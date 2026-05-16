@@ -5,7 +5,7 @@ export class RegisterCredentials {
   email!: string;
   @MinLength(2)
   @MaxLength(100)
-  username!: string;
+  name!: string;
   @IsString()
   @MinLength(6)
   @MaxLength(100)
