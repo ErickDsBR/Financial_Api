@@ -4,10 +4,10 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 export class User {
   @PrimaryGeneratedColumn()
   readonly id!: number;
-  @Column()
+  @Column({ length: 100 })
   name!: string;
-  @Column()
+  @Column({ unique: true, length: 100 })
   email!: string;
-  @Column()
+  @Column({ length: 100 })
   password!: string;
 }
