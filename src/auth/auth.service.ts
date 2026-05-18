@@ -1,6 +1,5 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { LoginCredentials, RegisterCredentials } from './dto/user.dtos';
-
 import { User } from './Entities/user_entities';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,7 +10,7 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) {} //! inject repository into the service
+  ) {}
 
   async register(credentials: RegisterCredentials) {
     const { email, name, password, confirmPassword } = credentials;
@@ -53,6 +52,7 @@ export class AuthService {
     if (!user) {
       throw new Error('Invalid email or password');
     }
+
     const isPasswordValid = await bcrypt.compare(
       credentials.password,
       user.password,

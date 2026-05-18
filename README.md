@@ -15,17 +15,20 @@ Estou aberto a opiniões, ideias e até trocar uma ideia sobre arquitetura, padr
 - **Setup do projeto** com NestJS + TypeScript
 - **Banco de dados** PostgreSQL configurado com TypeORM
 - **Cadastro de usuário** com validação e persistência
-- **Estrutura de autenticação** pronta para login
+- **Login funcional** com bcrypt para hash de senhas
+- **Validação de dados** com class-validator e DTOs
+- **Tratamento de erros** para email duplicado e credenciais inválidas
+- **Requests organizados** em arquivos `.http` para testes
 
 ## 🔜 Próxima entrega
 
-**Meta: Aprender relacionamentos no TypeORM (ManyToOne / OneToMany)**
+**Meta: JWT Authentication + Relacionamentos no TypeORM**
 
+- Implementar JWT para autenticação stateless
 - Entender e implementar `@ManyToOne` e `@OneToMany` na prática
 - Relacionar User ↔ Gastos (um usuário, muitos gastos)
 - Relacionar Categoria ↔ Gastos (uma categoria, muitos gastos)
 - Configurar `onDelete: 'CASCADE'` e eager/lazy loading
-- Hash de senha com bcrypt
 - Módulo de gastos → `POST /expenses` com FK para usuário
 
 ## 🗺️ O que vem por aí
@@ -45,8 +48,9 @@ npm run start:dev
 
 A API sobe em `http://localhost:3000`.
 
-## 📡 Endpoint atual
+## 📡 Endpoints
 
+### Register
 ```
 POST /auth/register
 {
@@ -54,6 +58,15 @@ POST /auth/register
   "name": "João Silva",
   "password": "senha123",
   "confirmPassword": "senha123"
+}
+```
+
+### Login
+```
+POST /auth/login
+{
+  "email": "joao@email.com",
+  "password": "senha123"
 }
 ```
 
