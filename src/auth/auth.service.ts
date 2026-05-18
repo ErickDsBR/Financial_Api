@@ -15,6 +15,7 @@ export class AuthService {
 
   async register(credentials: RegisterCredentials) {
     const { email, name, password, confirmPassword } = credentials;
+
     try {
       if (password !== confirmPassword) {
         throw new Error('Password and confirm password do not match');
@@ -28,8 +29,8 @@ export class AuthService {
         password: hashedPassword,
       };
 
-      this.userRepository.create(newUser);
-      await this.userRepository.save(newUser);
+      const user = this.userRepository.create(newUser);
+      await this.userRepository.save(user);
 
       return {
         message: 'User registered successfully',
@@ -43,6 +44,7 @@ export class AuthService {
       throw error;
     }
   }
+
   async login(credentials: LoginCredentials) {
     const user = await this.userRepository.findOne({
       where: { email: credentials.email },
