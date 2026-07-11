@@ -33,7 +33,7 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
-      'prettier/prettier': ['off', { endOfLine: 'auto' }],
+      "prettier/prettier": ["error", { endOfLine: "auto" }],
     },
   },
 );
