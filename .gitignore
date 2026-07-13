@@ -63,3 +63,4 @@ src/**/*.js
 src/**/*.js.map
 
 /src/generated/prisma
+/src/database/prisma/generated
