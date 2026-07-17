@@ -12,7 +12,7 @@ export class AuthService {
 
     try {
       const { rows } = await this.db.client.query(
-        "INSERT INTO Users (name, email,password) VALUES ($1, $2, $3) RETURNING *",
+        "INSERT INTO User (name, email,password) VALUES ($1, $2, $3) RETURNING *",
         [name, email, password],
       );
       return { message: "User created successfully", rows };
