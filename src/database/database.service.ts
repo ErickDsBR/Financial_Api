@@ -1,14 +1,18 @@
-import { Injectable } from "@nestjs/common";
-import { Client } from "pg";
+import { neon } from "@neondatabase/serverless";
+import { Global, Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 
+@Global()
 @Injectable()
 export class DatabaseService {
-  client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false },
-  });
+  public readonly sql;
 
-  constructor() {
-    this.client.connect();
+  constructor(private configService: ConfigService) {
+    const databaseUrl = this.configService.get("DATABASE_URL");
+    this.sql = neon(databaseUrl);
+  }
+  async getData() {
+    const data = await this.sql`...`;
+    return data;
   }
 }

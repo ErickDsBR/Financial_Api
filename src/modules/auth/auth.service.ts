@@ -11,10 +11,13 @@ export class AuthService {
     const { name, email, password } = createAuthDto;
 
     try {
-      const { rows } = await this.db.client.query(
-        "INSERT INTO User (name, email,password) VALUES ($1, $2, $3) RETURNING *",
-        [name, email, password],
-      );
+      // Trocamos db.client.query por db.sql e usamos crases (`)
+      const rows = await this.db.sql`
+        INSERT INTO "User" (name, email, password) 
+        VALUES (${name}, ${email}, ${password}) 
+        RETURNING *
+      `;
+
       return { message: "User created successfully", rows };
     } catch (error) {
       throw new Error("Error creating auth", { cause: error });
