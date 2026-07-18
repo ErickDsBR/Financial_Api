@@ -12,12 +12,11 @@ export class AuthService {
 
     try {
       // Trocamos db.client.query por db.sql e usamos crases (`)
-      const rows = await this.db.sql`
+      const rows = await this.db.sql`(
         INSERT INTO "User" (name, email, password) 
         VALUES (${name}, ${email}, ${password}) 
         RETURNING *
-      `;
-
+      )`;
       return { message: "User created successfully", rows };
     } catch (error) {
       throw new Error("Error creating auth", { cause: error });
@@ -25,7 +24,15 @@ export class AuthService {
   }
 
   findAll() {
-    return `This action returns all auth`;
+    try {
+      const allusers = this.db.sql`(
+        SELECT *
+        FROM "User"
+      )`;
+      return { message: "Users fetched successfully", rows: allusers };
+    } catch (error) {
+      throw new Error("Error fetching all users", { cause: error });
+    }
   }
 
   findOne(id: number) {

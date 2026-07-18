@@ -20,7 +20,7 @@ export class AuthController {
     return this.authService.create(createAuthDto);
   }
 
-  @Get()
+  @Get("/users")
   findAll() {
     return this.authService.findAll();
   }
