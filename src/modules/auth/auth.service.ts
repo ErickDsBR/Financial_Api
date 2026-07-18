@@ -1,4 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+} from "@nestjs/common";
 import { CreateAuthDto } from "./dto/create-auth.dto";
 import { UpdateAuthDto } from "./dto/update-auth.dto";
 import { DatabaseService } from "../../database/database.service";
@@ -11,15 +15,33 @@ export class AuthService {
     const { name, email, password } = createAuthDto;
 
     try {
-      // Trocamos db.client.query por db.sql e usamos crases (`)
-      const rows = await this.db.sql`
-        INSERT INTO "User" (name, email, password) 
-        VALUES (${name}, ${email}, ${password}) 
-        RETURNING *
+      const existingUser = await this.db.sql`
+        SELECT *
+        FROM "User"
+        WHERE email = ${email}
       `;
-      return { message: "User created successfully", rows };
+
+      if (existingUser.length > 0) {
+        throw new ConflictException({
+          message: "Email already exists",
+          suggestion:
+            "Please use a different email address or log in with your existing account.",
+          internalCode: "AUTH_001",
+        });
+      } else {
+        const rows = await this.db.sql`
+          INSERT INTO "User" (name, email, password) 
+          VALUES (${name}, ${email}, ${password}) 
+          RETURNING *
+        `;
+        return { message: "User created successfully", rows };
+      }
     } catch (error) {
-      throw new Error("Error creating auth", { cause: error });
+      if (error instanceof ConflictException) {
+        throw error;
+      }
+      console.error("Error critico:", error);
+      throw new InternalServerErrorException("erro");
     }
   }
 
