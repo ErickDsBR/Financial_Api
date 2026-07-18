@@ -12,24 +12,24 @@ export class AuthService {
 
     try {
       // Trocamos db.client.query por db.sql e usamos crases (`)
-      const rows = await this.db.sql`(
+      const rows = await this.db.sql`
         INSERT INTO "User" (name, email, password) 
         VALUES (${name}, ${email}, ${password}) 
         RETURNING *
-      )`;
+      `;
       return { message: "User created successfully", rows };
     } catch (error) {
       throw new Error("Error creating auth", { cause: error });
     }
   }
 
-  findAll() {
+  async findAll() {
     try {
-      const allusers = this.db.sql`(
+      const result = await this.db.sql`
         SELECT *
         FROM "User"
-      )`;
-      return { message: "Users fetched successfully", rows: allusers };
+      `;
+      return { message: "Users fetched successfully", rows: result };
     } catch (error) {
       throw new Error("Error fetching all users", { cause: error });
     }

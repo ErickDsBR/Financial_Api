@@ -16,9 +16,9 @@ async function bootstrap() {
   app.enableCors();
 
   if (process.env.NODE_ENV === "production") {
-    await app.listen(3000);
-  } else {
     await app.init();
+  } else {
+    await app.listen(3000);
   }
 }
 bootstrap();
