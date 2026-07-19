@@ -2,11 +2,12 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { CreateAuthDto, LoginAuthDto } from "./dto/create-auth.dto";
 import { UpdateAuthDto } from "./dto/update-auth.dto";
 import { DatabaseService } from "../../database/database.service";
-import { UnauthorizedException } from "@nestjs/common";
 
 @Injectable()
 export class AuthService {
@@ -76,11 +77,64 @@ export class AuthService {
     }
   }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
+  async update(id: number, updateAuthDto: UpdateAuthDto) {
+    const { name, email, password } = updateAuthDto;
+
+    try {
+      const [user] = await this.db.sql`
+        SELECT * FROM "User" WHERE id = ${id}
+      `;
+
+      if (!user) {
+        throw new NotFoundException({
+          message: "User not found",
+          internalCode: "AUTH_004",
+        });
+      }
+
+      const [updated] = await this.db.sql`
+        UPDATE "User"
+        SET name = COALESCE(${name}, name),
+            email = COALESCE(${email}, email),
+            password = COALESCE(${password}, password)
+        WHERE id = ${id}
+        RETURNING id, name, email, "createdAt"
+      `;
+
+      return { message: "User updated successfully", user: updated };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.error("Error updating user:", error);
+      throw new InternalServerErrorException("erro ao atualizar usuário");
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  async remove(id: number) {
+    try {
+      const [user] = await this.db.sql`
+        SELECT * FROM "User" WHERE id = ${id}
+      `;
+
+      if (!user) {
+        throw new NotFoundException({
+          message: "User not found",
+          internalCode: "AUTH_004",
+        });
+      }
+
+      await this.db.sql`
+        DELETE FROM "User" WHERE id = ${id}
+      `;
+
+      return { message: "User removed successfully" };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.error("Error removing user:", error);
+      throw new InternalServerErrorException("erro ao remover usuário");
+    }
   }
 }
