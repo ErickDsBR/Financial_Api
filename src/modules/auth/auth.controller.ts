@@ -8,7 +8,7 @@ import {
   Delete,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { CreateAuthDto } from "./dto/create-auth.dto";
+import { CreateAuthDto, LoginAuthDto } from "./dto/create-auth.dto";
 import { UpdateAuthDto } from "./dto/update-auth.dto";
 
 @Controller("auth")
@@ -19,15 +19,9 @@ export class AuthController {
   create(@Body() createAuthDto: CreateAuthDto) {
     return this.authService.create(createAuthDto);
   }
-
-  @Get("/users")
-  findAll() {
-    return this.authService.findAll();
-  }
-
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.authService.findOne(+id);
+  @Post("/login")
+  login(@Body() loginAuthDto: LoginAuthDto) {
+    return this.authService.login(loginAuthDto);
   }
 
   @Patch(":id")

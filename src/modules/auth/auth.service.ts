@@ -3,9 +3,10 @@ import {
   Injectable,
   InternalServerErrorException,
 } from "@nestjs/common";
-import { CreateAuthDto } from "./dto/create-auth.dto";
+import { CreateAuthDto, LoginAuthDto } from "./dto/create-auth.dto";
 import { UpdateAuthDto } from "./dto/update-auth.dto";
 import { DatabaseService } from "../../database/database.service";
+import { UnauthorizedException } from "@nestjs/common";
 
 @Injectable()
 export class AuthService {
@@ -45,20 +46,34 @@ export class AuthService {
     }
   }
 
-  async findAll() {
-    try {
-      const result = await this.db.sql`
-        SELECT *
-        FROM "User"
-      `;
-      return { message: "Users fetched successfully", rows: result };
-    } catch (error) {
-      throw new Error("Error fetching all users", { cause: error });
-    }
-  }
+  async login(loginAuthDto: LoginAuthDto) {
+    const { email, password } = loginAuthDto;
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+    try {
+      const [user] = await this.db.sql`
+      select * from "User" 
+      where email = ${email} 
+      `;
+      if (!user) {
+        throw new UnauthorizedException({
+          message: "User not found",
+          suggestion: "Please check your email and password.",
+          internalCode: "AUTH_002",
+        });
+      } else if (user.password !== password) {
+        throw new UnauthorizedException({
+          message: "Invalid password",
+          suggestion: "Please check your email and password.",
+          internalCode: "AUTH_003",
+        });
+      }
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      console.error("Error critico:", error);
+      throw new InternalServerErrorException("erro");
+    }
   }
 
   update(id: number, updateAuthDto: UpdateAuthDto) {
