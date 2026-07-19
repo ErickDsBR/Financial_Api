@@ -5,7 +5,15 @@ import { ConfigModule } from "@nestjs/config";
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validate: (config: Record<string, unknown>) => {
+        if (!config.DATABASE_URL) {
+          throw new Error("DATABASE_URL é obrigatória");
+        }
+        return config;
+      },
+    }),
     AuthModule,
     DatabaseModule,
   ],
