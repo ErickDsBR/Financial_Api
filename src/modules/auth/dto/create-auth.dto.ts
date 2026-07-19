@@ -15,9 +15,9 @@ export class CreateAuthDto {
 
 export class LoginAuthDto {
   @IsEmail({}, { message: "O email deve ser válido" })
-  email?: string;
-  
+  email!: string;
+
   @IsString()
   @MinLength(6, { message: "A senha deve ter no mínimo 6 caracteres" })
-  password?: string;
+  password!: string;
 }
