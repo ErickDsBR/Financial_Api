@@ -18,6 +18,7 @@ model User {
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
+  expenses Expense[]
   profile  Profile? 
 
 }
@@ -27,6 +28,14 @@ model Profile {
   work      Boolean @default(false)
   user      User   @relation(fields: [userId], references: [id])
   userId    Int    @unique 
+}
+model Expense {
+  id        Int      @id @default(autoincrement())
+  description String
+  amount    Float
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  createdAt DateTime @default(now())
 }
 
 
