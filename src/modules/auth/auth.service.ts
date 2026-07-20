@@ -46,7 +46,6 @@ export class AuthService {
       throw new InternalServerErrorException("erro");
     }
   }
-
   async login(loginAuthDto: LoginAuthDto) {
     const { email, password } = loginAuthDto;
 
@@ -76,6 +75,11 @@ export class AuthService {
       throw new InternalServerErrorException("erro");
     }
   }
+
+
+
+
+  
 
   async update(id: number, updateAuthDto: UpdateAuthDto) {
     const { name, email, password } = updateAuthDto;
