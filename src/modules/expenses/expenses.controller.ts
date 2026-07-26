@@ -17,7 +17,7 @@ export class ExpensesController {
 
   @Post("/addExpense")
   async create(@Body() createExpenseDto: CreateExpenseDto) {
-    return await this.expensesService.createUserExpense(createExpenseDto);
+    return await this.expensesService.createUserExpense(createExpenseDto)
   }
 
   @Get()
