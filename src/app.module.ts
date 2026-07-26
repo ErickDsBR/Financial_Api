@@ -9,6 +9,7 @@ import { PrismaModule } from "./database/prisma/prisma.module";
     ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
     AuthModule,
+    ExpensesModule,
   ],
   controllers: [],
   providers: [],

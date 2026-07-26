@@ -1,32 +1,13 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { CreateExpenseDto } from "./dto/create-expense.dto";
 import { UpdateExpenseDto } from "./dto/update-expense.dto";
-import { DatabaseService } from "../../database/database.service";
+import { PrismaService } from "src/database/prisma/prisma.service";
 
 @Injectable()
 export class ExpensesService {
-  constructor(private db: DatabaseService) {}
+  constructor(private db: PrismaService) {}
   async createUserExpense(createExpenseDto: CreateExpenseDto) {
     const { userId, category, description, amount } = createExpenseDto;
-
-    if (!userId) {
-      throw new Error("E Necessario estar logado para criar uma despesa");
-    }
-
-    try {
-      const [expense] = await this.db.sql`
-          INSERT INTO "Expense" ("userId", "category", "description", "amount")
-          VALUES (${userId}, ${category}, ${description}, ${amount})
-          RETURNING *
-        `;
-      return expense;
-    } catch (error) {
-      throw new UnauthorizedException({
-        message: "Error creating expense",
-        suggestion: "Please check your input and try again.",
-        internalCode: "EXPENSE_001",
-      });
-    }
   }
 
   findAllExpensesUser() {
