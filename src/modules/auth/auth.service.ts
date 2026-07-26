@@ -7,7 +7,7 @@ import {
 } from "@nestjs/common";
 import { CreateAuthDto, LoginAuthDto } from "./dto/create-auth.dto";
 import { UpdateAuthDto } from "./dto/update-auth.dto";
-import { DatabaseService } from "../../database/database.service";
+//* import { DatabaseService } from "../../database/database.service";
 import { PrismaService } from "../../database/prisma/prisma.service";
 
 @Injectable()
@@ -36,16 +36,11 @@ export class AuthService {
   }
   async login(loginAuthDto: LoginAuthDto) {
     const { email, password } = loginAuthDto;
-
   }
 
   async update(id: number, updateAuthDto: UpdateAuthDto) {
     const { name, email, password } = updateAuthDto;
-
-    
   }
 
-  async remove(id: number) {
-    
-  }
+  async remove(id: number) {}
 }
