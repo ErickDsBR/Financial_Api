@@ -2,6 +2,7 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { CreateAuthDto, LoginAuthDto } from "./dto/create-auth.dto";
 import { UpdateAuthDto } from "./dto/update-auth.dto";
@@ -17,7 +18,7 @@ export class AuthService {
     const existingUser = await this.db.user.findUnique({
       where: { email },
     });
-    
+
     try {
       if (existingUser) {
         throw new ConflictException("User already exists");
@@ -41,6 +42,28 @@ export class AuthService {
   }
   async login(loginAuthDto: LoginAuthDto) {
     const { email, password } = loginAuthDto;
+
+    try {
+      const user = await this.db.user.findUnique({
+        where: { email },
+      });
+
+      if (!user) {
+        throw new UnauthorizedException({
+          message: "This email is not registered, Please register first",
+        });
+      }
+
+      const isPasswordValid = user.password === password;
+
+      if (!isPasswordValid) {
+        throw new UnauthorizedException({
+          message: "Invalid password, Please try again",
+        });
+      }
+
+      return { message: "User logged in successfully", user };
+    } catch (error) {}
   }
 
   async update(id: number, updateAuthDto: UpdateAuthDto) {
