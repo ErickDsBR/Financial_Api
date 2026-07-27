@@ -10,7 +10,7 @@ export class CreateExpenseDto {
   category!: string;
 
   @IsString()
-  description!: string;
+  description?: string;
 
   @IsNumber()
   amount!: number;

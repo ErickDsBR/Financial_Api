@@ -17,17 +17,17 @@ export class ExpensesController {
 
   @Post("/addExpense")
   async create(@Body() createExpenseDto: CreateExpenseDto) {
-    return await this.expensesService.createUserExpense(createExpenseDto)
-  }
-
-  @Get()
-  findAll() {
-    return this.expensesService.findAllExpensesUser();
+    return await this.expensesService.createUserExpense(createExpenseDto);
   }
 
   @Get(":id")
+  async findAllExpensesUser(@Param("id") id: string) {
+    return await this.expensesService.findAllExpensesUser(+id);
+  }
+  
+  @Get(":id")
   findOne(@Param("id") id: string) {
-    return this.expensesService.findOne(+id);
+    return this.expensesService.findOne(Number(id));
   }
 
   @Patch(":id")
